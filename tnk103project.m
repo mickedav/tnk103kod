@@ -131,7 +131,9 @@ for n=1:size(sensorIdArray,2)
 end
 
 
+Hej = 2 * 15;
 
+'Micke är bäst'
 % figure
 % [C, h] = contourf(3600*sensorDataArray);
 % colormap hot
