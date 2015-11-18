@@ -2,10 +2,11 @@
 % database.
 
 %% Setup
-
+clear all
+clc
 % Adding a path to the top folder.
-addpath(genpath('H:\TNK103\KOD'),'-end');
-
+% addpath(genpath('H:\TNK103\'),'-end');
+% 
 import core.*               %Core classes
 
 % Setting the enviroment (i.e loading all jar files)
@@ -43,20 +44,103 @@ end
 % % Creating a network object.
 network = Network();
 
-% 
+
 % linksInNetwork = fundamentalDiagramObject.getAvalibleAreas;
 % f = fundamentalDiagramObject.readFromDatabaseAsTable(linksInNetwork(1));
 
 
 test = network.getRadarSensors;
 
-sensorId = Integer(224);
+%% getSensorData - do a function 
+sensorIdArray = [244 243 239 238 236 235 231 230 229 227 226 225 224 223 222 221];
+
 startTime = Time.newTimeFromBerkeleyDateTime(2013,03,21,8,0,0,0);
 endTime = Time.newTimeFromBerkeleyDateTime(2013,03,21,10,0,0,0);
 
-utdata = output.SensorOutput.getSensorOutput(network,sensorId,startTime,endTime);
+for i = 1:size(sensorIdArray,2)
+sensorId = Integer(sensorIdArray(i));
+sensorData = output.SensorOutput.getSensorOutput(network,sensorId,startTime,endTime);
+sensorData2 = sensorData.speed .* 3.6;
 
-a = utdata.speed .* 3.6;
+% If the sendorData from a specific sensor is larger or smaller than the
+% number of sensorData from the previous sensors.
+if i~= 1 && size(sensorData2,1) < size(sensorDataArray,1)
+sensorDataArray = sensorDataArray(1:size(sensorData2,1),:);
+
+elseif i~= 1 && size(sensorData2,1) > size(sensorDataArray,1)
+sensorData2 = sensorData2(1:size(sensorDataArray,1));
+end
+    
+sensorDataArray(:,i) = sensorData2;
+end
+%%
+
+numberOfCells = 0;
+cellSize = 0;
+lengthStretch = 0;
+linkIdArray = [11269 14136 6189 8568 15256 9150 38698 9160 71687 9198];
+
+for j = linkIdArray    
+link = network.getLinkWithID(j);
+numberOfCells(end+1) = link.getNbCells;
+cellSize(end+1) = link.getLength / numberOfCells(end);
+lengthStretch = lengthStretch + link.getLength;
+end
+
+numberOfCells = numberOfCells(2:end);
+cellSize = cellSize(2:end);
+totalNumberOfCells = sum(numberOfCells);
+
+sensor = network.getRadarSensors;
+
+sensorArray = 0;
+for k=1:size(sensor,1)
+sensorArray(end+1) = sensor(k).ID;
+end
+% sensorArray consists of all the sensor's ID in network 50
+sensorArray = sensorArray(2:end);
+
+sensorOffset = 0;
+indexArray=0;
+for m = sensorIdArray
+index = find(sensorArray == m);
+sensorOffset(end+1) = sensor(index).offset;
+indexArray(end+1)=index;
+end
+% The offset to the sensor's location of the link 
+sensorOffset = sensorOffset(2:end);
+indexArray = indexArray(2:end);
+% Get the 
+
+% sensorDataCellArray = cell(size(linkIdArray),1)
+
+% Initialize cellSpeed which consists of the speed for each cell in each
+% link 
+for i = 1:size(linkIdArray,2)
+cellSpeed{i} = zeros(numberOfCells(i),1)
+end
+
+for n=1:size(sensorIdArray,2)
+
+    link=sensor(indexArray(n)).link.id;
+    index = find(linkIdArray == link)
+    
+    cellWithSensor=round(sensorOffset(n)/cellSize(index))
+    cellSpeed{index}
+    
+end
+
+
+
+% figure
+% [C, h] = contourf(3600*sensorDataArray);
+% colormap hot
+% title('speed contour plot')
+% xlabel('time');
+% ylabel('segment');
+% clabel(C,h);
+% set(gca,'YTick',([1:1:length(q(1,:))]))
+
 
 
 
