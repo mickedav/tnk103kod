@@ -64,46 +64,58 @@ catch
     'NOOOOOOOO!!!!!'
 end
 
-dbr.psRSNext('test')
+%dbr.psRSNext('test')
+start_TimeStamp = Time.newTimeFromBerkeleyDateTime(2013,03,21,0,0,0,0);
 
 wantedDataInt = [String('startlid'), String('endlid'), String('traveltime')];
 wantedDataDouble = [String('start_offset'), String('end_offset')];
-%wantedDataTimeStamp = [String('start_time'), String('end_time')];
+wantedDataTimeStamp = [String('start_time'), String('end_time')];
 
 row = 1;
 intData = zeros(110,10);
 doubleData = zeros(110,10);
 timeStampData = zeros(110,10);
-
-while dbr.psRSNext('test')
+bajskorv = 0; 
+while bajskorv < 10
+    dbr.psRSNext('test');
     for i = 1:size(wantedDataInt)
         intData(row,i) = dbr.psRSGetInteger('test',wantedDataInt(i));
-
     end
     
     for i = 1:size(wantedDataDouble)
         doubleData(row,i) = dbr.psRSGetDouble('test',wantedDataDouble(i));
     end
     
-    %         for i = 1:size(wantedDataTimeStamp)
-    %            timeStampData(row,i) = dbr.psRSGetTimestamp('test',wantedDataTimeStamp(i));
-    %         end
+    for i = 1:size(wantedDataTimeStamp)
+        time_stamp_temp = TimeInterval(start_TimeStamp, dbr.psRSGetTimestamp('test', wantedDataTimeStamp(i)));
+        timeStampData(row,i) = time_stamp_temp.get_time_interval_duration;
+
+    end
+%         test_start = dbr.psRSGetTimestamp('test', wantedDataTimeStamp(1));   
+%         test_end = dbr.psRSGetTimestamp('test', wantedDataTimeStamp(2));
+%         timeStampData(row,i) = TimeInterval(start_TimeStamp, test_start) 
+        %timeStampData(row,i) = dbr.psRSGetTimestamp('test',wantedDataTimeStamp(i));
+     
     row = row + 1;
+    bajskorv = bajskorv + 1;
 end
 
 
-a = Spot(network.getLinkWithID(intData(1,1)), doubleData(1,1), -1)
-b = Spot(network.getLinkWithID(intData(1,2)), doubleData(1,2), -1)
-% travelTime = intData(1,3);
+a = Spot(network.getLinkWithID(intData(1,1)), doubleData(1,1), -1);
+b = Spot(network.getLinkWithID(intData(1,2)), doubleData(1,2), -1);
+travelTime = intData(1,3);
 % 
-% route = analyst.extractRoute(a,b);
-% route.getRouteLength;
+route = analyst.extractRoute(a,b);
+route.getRouteLength;
 % 
-% fredagsMys = (route.getRouteLength/travelTime)*3.6
+v = (route.getRouteLength/travelTime)*3.6;
 
 
 [numberOfCells, cellSize, lengthStretch, totalNumberOfCells] = getCellMap(network, linkIdArray);
-da = getCellId(a, linkIdArray, numberOfCells, cellSize)
+
+startCell = getCellId(a, linkIdArray, numberOfCells, cellSize);
+endCell = getCellId(b, linkIdArray, numberOfCells, cellSize);
+k = setCellSpeedTaxi(startCell, endCell, v, totalNumberOfCells);
 
 
 
