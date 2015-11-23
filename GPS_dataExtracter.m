@@ -100,9 +100,7 @@ b = Spot(network.getLinkWithID(intData(1,2)), doubleData(1,2), -1)
 % route.getRouteLength;
 % 
 % fredagsMys = (route.getRouteLength/travelTime)*3.6
-first = a.link.id
-second = a.offset
-third = a.link.nbCells
+
 
 [numberOfCells, cellSize, lengthStretch, totalNumberOfCells] = getCellMap(network, linkIdArray);
 da = getCellId(a, linkIdArray, numberOfCells, cellSize)
