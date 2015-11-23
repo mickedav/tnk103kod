@@ -147,7 +147,9 @@ end
 end
 
 
+Hej = 2 * 15;
 
+% <<<<<<< HEAD
 % sensorDataArray
 
 %  temp=sensorDataArray';
@@ -178,6 +180,17 @@ colorbar
 % % array c in cellSpeed
 %      c(cellWithSensor,1)=sensorDataArray(1,1);
 %      cellSpeed{index}=c;
+% =======
+% 'Micke är bäst'
+% figure
+% [C, h] = contourf(3600*sensorDataArray);
+% colormap hot
+% title('speed contour plot')
+% xlabel('time');
+% ylabel('segment');
+% clabel(C,h);
+% set(gca,'YTick',([1:1:length(q(1,:))]))
+% >>>>>>> origin/master
 
 
 
