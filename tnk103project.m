@@ -4,9 +4,12 @@
 %% Setup
 clear all
 clc
-% Adding a path to the top folder.
-% addpath(genpath('H:\TNK103\'),'-end');
+close all
 % 
+% 
+% % Adding a path to the top folder.
+addpath(genpath('H:\TNK103\'),'-end');
+% % 
 import core.*               %Core classes
 
 % Setting the enviroment (i.e loading all jar files)
@@ -38,18 +41,16 @@ end
     core.Monitor.set_cid(CONFIGURATIONID);
 
 
-%% Kan behövas
+% Kan behövas
 % fundamentalDiagramObject = datatypes.FundamentalDiagramParameters(network, CONFIGURATIONID);
-% 
-% % Creating a network object.
+
+% Creating a network object.
 network = Network();
 
 
 % linksInNetwork = fundamentalDiagramObject.getAvalibleAreas;
 % f = fundamentalDiagramObject.readFromDatabaseAsTable(linksInNetwork(1));
 
-
-test = network.getRadarSensors;
 
 %% getSensorData - do a function 
 sensorIdArray = [244 243 239 238 236 235 231 230 229 227 226 225 224 223 222 221];
@@ -79,6 +80,8 @@ numberOfCells = 0;
 cellSize = 0;
 lengthStretch = 0;
 linkIdArray = [11269 14136 6189 8568 15256 9150 38698 9160 71687 9198];
+numberOfTimeSteps = size(sensorDataArray,1);
+numberOfSensors = size(sensorIdArray,2);
 
 for j = linkIdArray    
 link = network.getLinkWithID(j);
@@ -117,29 +120,64 @@ indexArray = indexArray(2:end);
 % Initialize cellSpeed which consists of the speed for each cell in each
 % link 
 for i = 1:size(linkIdArray,2)
-cellSpeed{i} = zeros(numberOfCells(i),1)
+cellSpeed{i} = zeros(numberOfCells(i),1);
 end
 
-for n=1:size(sensorIdArray,2)
+% sensorInCell = zeros(totalNumberOfCells,1);
+
+temp = NaN(totalNumberOfCells, numberOfTimeSteps);
+
+
+for n=1:numberOfSensors
+currentNumberOfCells = 0;
+% size(sensorIdArray,2)
 
     link=sensor(indexArray(n)).link.id;
-    index = find(linkIdArray == link)
+% index is the segment number (1-10)
+    index = find(linkIdArray == link);
+
+for i=(index-1):-1:1
+   currentNumberOfCells = currentNumberOfCells + numberOfCells(i);
+end
     
-    cellWithSensor=round(sensorOffset(n)/cellSize(index))
-    cellSpeed{index}
-    
+    cellWithSensor=ceil(sensorOffset(n)/cellSize(index));
+% If there is a sensor located in the cell, the element is set to 1.  
+    temp(currentNumberOfCells+cellWithSensor,:)=sensorDataArray(:,n);
+
 end
 
 
 
-% figure
-% [C, h] = contourf(3600*sensorDataArray);
-% colormap hot
-% title('speed contour plot')
-% xlabel('time');
-% ylabel('segment');
-% clabel(C,h);
-% set(gca,'YTick',([1:1:length(q(1,:))]))
+% sensorDataArray
+
+%  temp=sensorDataArray';
+
+% figure(1)
+% mycmap = colormap(ax); 
+
+% colormap(ax_new,mycmap)
+
+% save('MyColormaps','mycmap')
+
+load('mycmap','cm')
+imagesc(temp);
+colormap(cm)
+colorbar
+
+% spara ny colomap: 1. Gör i colormapeditor, apply 2.kommandofönstretcm=colormap 3. kommandofönstretcm=save mycmap cm;
+
+%   colormap ('jet')
+%  title('speed contour plot')
+%   imagesc(temp);
+%  colorbar;
+
+% % cellSpeed includes index number of arrays. Each array is
+% % cellWithSensor for each index (cell)
+%      c=cellSpeed{index};
+% % Insert the "xxxdata" on place cellWithSensor in array c and then insert the uppdated
+% % array c in cellSpeed
+%      c(cellWithSensor,1)=sensorDataArray(1,1);
+%      cellSpeed{index}=c;
 
 
 
