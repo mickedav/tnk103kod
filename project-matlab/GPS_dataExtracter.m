@@ -17,6 +17,7 @@ catch
     setEnviroment
 end
 
+<<<<<<< Updated upstream:GPS_dataExtracter.m
 % Importing all java classes that will be used.
 import java.lang.*          %String classes
 import java.util.*          %Wrapper classes
@@ -78,6 +79,52 @@ timeStampData = zeros(110,10);
 while dbr.psRSNext('test')
     for i = 1:size(wantedDataInt)
         intData(row,i) = dbr.psRSGetInteger('test',wantedDataInt(i));
+=======
+    % Importing all java classes that will be used.
+    import java.lang.*          %String classes
+    import java.util.*          %Wrapper classes
+    import core.*               %Core classes
+    import matrix.*             %Matrix classes
+    import netconfig.*          %Network clases
+    import util.NetworkAnalysis
+    import bAE.*               %Output data classes not needed in this example
+    import highwaycommon.*      %Parameter classes
+    %import highwayflowmodel.*  %Flow model classes not needed in this example
+    %import highway.*           %Highway classes not needed in this example
+
+    % Setting the network id and configuration id.
+    NETWORKID = 50;
+    CONFIGURATIONID = 15001;
+
+    core.Monitor.set_db_env('tal_local') 
+    core.Monitor.set_prog_name('mms_matlab')
+    core.Monitor.set_nid(NETWORKID);
+    core.Monitor.set_cid(CONFIGURATIONID);
+    
+    network = Network();
+    dbr = DatabaseReader();
+    analyst = NetworkAnalysis(network);
+    
+    query = ['SELECT * FROM info24_feed.taxi_tt '...
+        'WHERE(startlid = 11269 OR startlid = 14136 '...
+        'OR startlid = 6189 OR startlid = 8568 '...
+        'OR startlid = 15256 OR startlid = 9150 OR startlid = 38698 '...
+        'OR startlid = 9160 OR startlid = 71687 OR startlid = 9198) '...
+        'AND(endlid = 11269 OR endlid = 14136 OR endlid = 6189 OR endlid = 8568 '...
+        'OR endlid = 15256 OR endlid = 9150 OR endlid = 38698 '...
+        'OR endlid = 9160 OR endlid = 71687 OR endlid = 9198) '...
+        'AND DATE(start_time) = ''2013-03-21'' AND isvalid '...
+        'ORDER BY start_time LIMIT 100'];
+
+ %   query = 'SELECT * FROM info24_feed.taxi_tt WHERE(startlid = 11269 OR startlid = 14136 OR startlid = 6189 OR startlid = 8568 OR startlid = 15256 OR startlid = 9150 OR startlid = 38698 OR startlid = 9160 OR startlid = 71687 OR startlid = 9198) AND(endlid = 11269 OR endlid = 14136 OR endlid = 6189 OR endlid = 8568 OR endlid = 15256 OR endlid = 9150 OR endlid = 38698 OR endlid = 9160 OR endlid = 71687 OR endlid = 9198)AND DATE(start_time) = "2013-03-21" AND isvalid ORDER BY start_time';
+    query = String(query);
+    dbr.psCreate(String('test'),query);
+    
+    try
+        dbr.psQuery(String('test'));
+    catch
+        'NOOOOOOOO!!!!!'
+>>>>>>> Stashed changes:project-matlab/GPS_dataExtracter.m
     end
     
     for i = 1:size(wantedDataDouble)
