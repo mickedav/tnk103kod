@@ -166,12 +166,20 @@ imagesc(temp);
 colormap(cm)
 colorbar
 
+<<<<<<< HEAD
 %% spara ny colomap: 1. Gör i colormapeditor, apply 2.kommandofönstretcm=colormap 3. kommandofönstretcm=save mycmap cm; %%
+=======
+% spara ny colomap: 1. Gör i colormapeditor, apply 2.kommandofönstretcm=colormap 3. kommandofönstretcm=save mycmap cm;
+
+>>>>>>> origin/master
 %   colormap ('jet')
 %  title('speed contour plot')
 %   imagesc(temp);
 %  colorbar;
+<<<<<<< HEAD
 %%
+=======
+>>>>>>> origin/master
 
 % % cellSpeed includes index number of arrays. Each array is
 % % cellWithSensor for each index (cell)
